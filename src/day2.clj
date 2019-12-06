@@ -42,16 +42,33 @@
        first
        answer2))
 
+(defn solve2-parallel
+  "Parallel version of solve2."
+  [intcodes wanted]
+  (->> (map #(assoc intcodes
+                    1 (first %)
+                    2 (second %)) (nouns-verbs))
+       (pmap #(hash-map :result (try (first (execute % 0)) (catch Exception e nil))
+                        :intcodes %))
+       (filter #(= wanted (:result %)))
+       first
+       :intcodes
+       answer2))
+
 (defn -main [& args]
   (let [intcodes (-> (slurp "resources/day2-input.txt")
                      parse-intcodes
                      (assoc 1 12 2 2))]
     (println "part 1:" (first (solve1 intcodes)))
-    (println "part 2:" (solve2 intcodes 19690720))))
+    (println "part 2:" (solve2 intcodes 19690720))
+    (println "part 2 parallel:" (solve2-parallel intcodes 19690720))
+    (shutdown-agents)))
 
 (comment
   (-> "resources/day2-input.txt" slurp parse-intcodes (assoc 1 12 2 2) solve1 first)
   ;; => 4138687
   (-> "resources/day2-input.txt" slurp parse-intcodes (solve2 19690720))
   ;; => 6635  
+  (-> "resources/day2-input.txt" slurp parse-intcodes (solve2-parallel 19690720))
+  ;; => 6635
   )
