@@ -9,9 +9,10 @@
                             digits)]
     {:A a :B b :C c :opcode (+ (* d 10) e)}))
 
-(defn get-param [[ints ip] value position]
-  (if (= 0 value) (aget ints (aget ints (+ position ip)))
-      (aget ints (+ position ip))))
+(defn get-param [[ints ip] mode position]
+  (case mode
+    0 (aget ints (aget ints (+ position ip)))
+    (aget ints (+ position ip))))
 
 (defn parse-params [[ints ip] {:keys [B C]} n]
   (let [arg1 (get-param [ints ip] C 1)
@@ -61,7 +62,7 @@
        6 (recur (execute-jump [ints ip] zero? instruction))
        7 (recur (execute-cmp [ints ip] < instruction))
        8 (recur (execute-cmp [ints ip] = instruction))
-       (day2/execute [ints ip])))))
+       99 nil))))
 
 (defn solve [intcodes input]
   (-> (with-out-str
