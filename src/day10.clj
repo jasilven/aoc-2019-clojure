@@ -59,7 +59,7 @@
                          (sort (partial clockwise-compare origin) visible))
                  (set/difference asteroids visible)))))))
 
-(defn -main[]
+(defn -main [& args]
   (let [fname "resources/day10-input.txt"]
     (println "part 1:" (solve1 fname))
     (println "part 2:" (solve2 fname))))
